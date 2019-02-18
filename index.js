@@ -10,22 +10,14 @@ server.get('/api/users', (req, res) => {
     db
         .find()
         .then(users => {
-            if (users) {
-                res.status(200).json({ success: true, users })
-            } else {
-                res.status(500).json({
-                    success: false,
-                    message: 'There was an error while saving the user to the database'
-                })
-            }
+            res.status(200).json(users);
         })
-        .catch(({ code, message }) => {
-            res.status(code).json({
-                success: false,
-                message,
-            });
-        });
+        .catch( () => {
+            res.status(500).json({ error: 'The users information could not be retrieved.' })
+        })
 });
+
+
 
 server.listen(4000, () => {
     console.log('\n*** Server Running on http://localhost:4000 ***\n')
