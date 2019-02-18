@@ -12,7 +12,7 @@ server.get('/api/users', (req, res) => {
         .then(users => {
             res.status(200).json(users);
         })
-        .catch( () => {
+        .catch(() => {
             res.status(500).json({ error: 'The users information could not be retrieved.' })
         })
 });
@@ -21,18 +21,20 @@ server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
 
     db
-        findById(id)
+        .findById(id)
         .then(user => {
             if (user) {
                 res.status(200).json({ success: true, user })
             } else {
                 res.status(404).json({
                     success: false,
-
+                    message: 'The user with the specified ID does not exist.'
                 })
             }
         })
-        .catch()
+        .catch(() => {
+            res.status(500).json({ error: 'The user information could not be retrieved.' })
+        })
 })
 
 server.post('/api/users', (req, res) => {
@@ -49,7 +51,7 @@ server.post('/api/users', (req, res) => {
         .then(user => {
             res.status(201).json({ success: true, user })
         })
-        .catch( () => {
+        .catch(() => {
             res.status(500).json({
                 success: false,
                 error: 'There was an error while saving the user to the database.'
