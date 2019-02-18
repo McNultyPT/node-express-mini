@@ -17,21 +17,37 @@ server.get('/api/users', (req, res) => {
         })
 });
 
-server.post('/api/users', (req, res) => {
-    const name = req.name;
-    const bio = req.bio;
+server.get('/api/users/:id', (req, res) => {
+    const id = req.params.id;
 
     db
-        .insert(name, bio)
+        findById(id)
         .then(user => {
             if (user) {
-                res.status(201).json({ success: true, user })
+                res.status(200).json({ success: true, user })
             } else {
-                res.status(400).json({
+                res.status(404).json({
                     success: false,
-                    errorMessage: 'Please provide name and bio for the user.'
+
                 })
             }
+        })
+        .catch()
+})
+
+server.post('/api/users', (req, res) => {
+    const userInfo = req.body;
+    console.log(userInfo);
+
+    if (!userInfo.name || !userInfo.bio) return res.status(400).json({
+        success: false,
+        errorMessage: 'Please provide name and bio for the user.'
+    })
+
+    db
+        .insert(userInfo)
+        .then(user => {
+            res.status(201).json({ success: true, user })
         })
         .catch( () => {
             res.status(500).json({
